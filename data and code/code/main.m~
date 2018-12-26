@@ -1,0 +1,78 @@
+% This is the main function 
+
+%========================================================
+% Experiment data for 28 training conditions
+%========================================================
+data=experiment_data();
+%%
+%========================================================
+% Mean,STD,SEM
+%========================================================
+%%
+%========================================================
+% Experiment protocols for 28 training conditions
+% stimuli{1}{1} is the odor stimuli of odorX
+% stimuli{1}{2} is the odor stimuli of odorY
+% stimuli{2}{1} is the shock stimuli paired with odorX
+% stimuli{2}{2} is the shock stimuli paired with odorY
+%========================================================
+stimuli=experiment_protocol();
+
+
+%%
+% Fit the model to the data with optimized parameters
+% LI is the learning index
+% minparams are the optimized parameters
+% minerror are minimum square errors 
+%=======================================
+% fitting - predictive learning rule
+%=======================================
+ittnum=100;
+paramsrag_pred=prange('p');
+
+[minparams_pred,minerror_pred,~,~]=...
+    minerrorfit(@M2_problindex,stimuli,datatmean',1,paramsrag_pred,ittnum);
+
+[ P,LI] = M2_problindex(1,combine_stimuli,minparams);
+
+%%
+%=======================================
+% fitting - nonlinear STDP rule 
+%=======================================
+paramsrag_nstd=prange('p');
+
+[minparams_heh,minerror_heh,itparams_heh,iterror_heh]=...
+    minerrorfit(@Hebbian_eta,combine_stimuli,datatmean',1,paramsrag_h,ittnum);
+
+[ ~,lindex_heh] = Hebbian_eta(1,combine_stimuli,minparams_heh);
+
+%%
+%======================================
+% fittling - linear STDP rule
+%======================================
+
+[minparams_hel,minerror_hel,itparams_hel,iterror_hel]=...
+    minerrorfit(@Hebbian_eta,combine_stimuli,datatmean',2,paramsrag_l,ittnum);
+
+[ ~,LI_hel] = Hebbian_eta(2,combine_stimuli,minparams_hel);
+
+%%
+%======================================
+% fittling - covariance rule
+%======================================
+
+[minparams_hec1000,minerror_hec1000,itparams_hec1000,iterror_hec1000]=...
+    minerrorfit(@Hebbian_eta,combine_stimuli,datatmean',3,paramsrag_c,ittnum);
+
+[ ~,LI_hec] = Hebbian_eta(3,combine_stimuli,minparams_hec1000);
+
+%%
+%======================================
+% fittling - additive Hebbian rule
+%======================================
+
+[minparams_hea,minerror_hea,itparams_hea,iterror_hea]=...
+    minerrorfit(@Hebbian_eta,combine_stimuli,datatmean',0,paramsrag_c,ittnum);
+
+[ ~,lindex_hea] = Hebbian_eta(0,combine_stimuli,minparams_hea);
+
