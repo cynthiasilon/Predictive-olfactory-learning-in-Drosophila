@@ -31,7 +31,11 @@ paramsrag_pred=prange('p');
 [minparams_pred,minerror_pred,~,~]=...
     minerrorfit(@M2_problindex,stimuli,datamean,1,paramsrag_pred,ittnum);
 
+<<<<<<< HEAD
 [ P_pred,LI_pred] = M2_problindex(1,stimuli,minparams_pred);
+=======
+[ P_pred,LI_pred] = M2_problindex(1,stimuli,minparams);
+>>>>>>> 80da98e7ee68c859fcac9e4defbfe97a69e61034
 
 %%
 %=======================================
